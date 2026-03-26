@@ -192,12 +192,24 @@ p.intro { font-size:15px; color:var(--text); line-height:1.9; margin-bottom:28px
 #visual h2 { color:#eee8df; }
 #visual .label { color:var(--sage-light); }
 #visual .divider { background:rgba(255,255,255,.1); }
-.visual-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:3px; margin-top:40px; background:rgba(255,255,255,.06); }
-.visual-slot { background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.1); aspect-ratio:4/3; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:background .3s; }
-.visual-slot:hover { background:rgba(255,255,255,.07); }
-.visual-slot-icon { font-size:28px; opacity:.3; }
-.visual-slot-label { font-size:11px; color:rgba(238,232,223,.3); letter-spacing:.1em; }
-.visual-note { margin-top:24px; font-size:13px; color:rgba(238,232,223,.35); text-align:center; }
+.vis-preface { font-size:13.5px; color:rgba(238,232,223,.65); line-height:1.9; margin-bottom:48px; }
+.vis-brand-color { margin:20px 0 32px; }
+.vis-brand-color img { max-width:320px; border-radius:6px; }
+.vis-style-block { margin-bottom:56px; padding-top:36px; border-top:1px solid rgba(255,255,255,.08); }
+.vis-style-badge { display:inline-block; font-size:10px; letter-spacing:.2em; color:var(--warm); margin-bottom:12px; }
+.vis-style-title { font-family:'Noto Serif TC',serif; font-size:18px; font-weight:300; color:var(--cream); margin-bottom:16px; }
+.vis-style-desc { font-size:13px; color:rgba(238,232,223,.6); line-height:1.85; margin-bottom:20px; }
+.vis-style-sub { font-size:11px; letter-spacing:.12em; color:var(--sage-light); margin:18px 0 8px; opacity:.7; }
+.vis-gallery { display:flex; gap:12px; overflow-x:auto; padding-bottom:12px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+.vis-gallery::-webkit-scrollbar { height:4px; }
+.vis-gallery::-webkit-scrollbar-track { background:rgba(255,255,255,.05); border-radius:2px; }
+.vis-gallery::-webkit-scrollbar-thumb { background:rgba(168,184,159,.3); border-radius:2px; }
+.vis-gallery img { height:260px; width:auto; border-radius:8px; flex-shrink:0; scroll-snap-align:start; object-fit:cover; cursor:pointer; transition:transform .3s; }
+.vis-gallery img:hover { transform:scale(1.02); }
+.vis-gallery img.tall { height:320px; }
+.vis-note-block { margin-top:48px; padding:24px; border:1px solid rgba(255,255,255,.1); border-radius:10px; background:rgba(255,255,255,.03); }
+.vis-note-title { font-size:11px; letter-spacing:.18em; color:var(--warm); margin-bottom:12px; }
+.vis-note-text { font-size:13px; color:rgba(238,232,223,.6); line-height:1.85; }
 
 /* ── BUDGET ── */
 #budget { background:var(--cream); min-height:auto; padding:100px 0 120px; }
@@ -229,7 +241,8 @@ p.intro { font-size:15px; color:var(--text); line-height:1.9; margin-bottom:28px
 @media(max-width:720px){
   .container{padding:0 24px;}
   .channels-layout,.goal-layout,.care-layout,.phases-grid,.budget-grid,.inflow-layout{grid-template-columns:1fr;}
-  .diag-issues,.visual-grid{grid-template-columns:1fr 1fr;}
+  .diag-issues{grid-template-columns:1fr 1fr;}
+  .vis-gallery img{height:200px;}
   .svg-wrap svg{min-width:500px;}
   #nav-dots{display:none;}
 }
@@ -927,22 +940,82 @@ p.intro { font-size:15px; color:var(--text); line-height:1.9; margin-bottom:28px
     <span class="label fade-in">品牌視覺 · Visual Direction</span>
     <h2 class="fade-in d1">品牌視覺風格方向</h2>
     <div class="divider fade-in d2"></div>
-    <p class="intro fade-in d3" style="color:rgba(238,232,223,.5);">以下是針對品牌視覺升級的方向參考。<br>具體風格細節需要設計師與你深入討論確認。</p>
-    <div class="visual-grid fade-in d4">
-      <div class="visual-slot">
-        <div class="visual-slot-icon">🎨</div>
-        <div class="visual-slot-label">色彩應用</div>
+
+    <!-- 前言 -->
+    <div class="vis-preface fade-in d3">
+      一個成功的品牌<br>視覺設計是消費者對於品牌的記憶點之一<br>譬如<br>我們看到 綠＋黑 會聯想到Uber<br>看到紫色會想到YAHOO &nbsp; Anna Sui<br>看到桃紅 會想到MOMO購物或是foodpanda ……等<br><br>品牌主色也代表著其主要產品信念<br>大地色 綠色系 會讓人輕易聯想到 自然 舒緩 健康 相關<br>黃 橘 紅色......等彩度高的色系 容易運用在美食相關 易引起食慾<br><br>目前peb品牌視覺氛圍較為理性
+      <div class="vis-brand-color"><img src="visual/peb品牌色.png" alt="peb 品牌色"></div>
+      可以理解這樣的色系，是要以醫護專業角度提供專業信任感，<br>建議整體上若能增加一點"引誘感"，激發消費者勢必可以讓整體更有記憶點。<br><br>基於品牌的露出 大部分為照片/影像 搭配 文字<br>針對整體品牌風格<br>提供以下三種方向 以供參考
+    </div>
+
+    <!-- ★ A風格 -->
+    <div class="vis-style-block fade-in d4">
+      <span class="vis-style-badge">★ A 風格</span>
+      <div class="vis-style-title">隨性插畫線條風</div>
+      <div class="vis-style-desc">
+        <span class="vis-style-sub">版面（A-1~A-4）</span><br>
+        以現有的照片＆文字說明<br>建議可搭配簡約線條插畫風格<br>大量留白＋隨性花草線條＋柔性色塊（粉 粉橘 粉綠 粉藍）<br>是皆可 傳達柔軟 舒壓 輕盈感的色系<br>適合用來當作品牌的代表色系
       </div>
-      <div class="visual-slot">
-        <div class="visual-slot-icon">✍️</div>
-        <div class="visual-slot-label">字型風格</div>
+      <div class="vis-gallery">
+        <img src="visual/A-1.jpg" alt="A-1 版面">
+        <img src="visual/A-2.jpg" alt="A-2 版面">
+        <img src="visual/A-3.jpg" alt="A-3 版面">
+        <img src="visual/A-4.jpg" alt="A-4 版面">
       </div>
-      <div class="visual-slot">
-        <div class="visual-slot-icon">📐</div>
-        <div class="visual-slot-label">版面系統</div>
+      <div class="vis-style-desc" style="margin-top:20px;">
+        <span class="vis-style-sub">人物（A-5）</span><br>
+        建議可搭配相同chill的人物插畫<br>筆觸隨性 與選定的版面風格可互搭<br>藉由人物的裝扮設定<br>更可讓消費者有更多的共鳴
+      </div>
+      <div class="vis-gallery">
+        <img src="visual/A-5.jpg" alt="A-5 人物" class="tall">
       </div>
     </div>
-    <div class="visual-note fade-in d5">這些方向待與你討論後，由設計師輸出完整的視覺規範手冊。</div>
+
+    <!-- ★ B風格 -->
+    <div class="vis-style-block fade-in d4">
+      <span class="vis-style-badge">★ B 風格</span>
+      <div class="vis-style-title">極簡幾何風</div>
+      <div class="vis-style-desc">
+        <span class="vis-style-sub">版面（B-1~B-3）</span><br>
+        圖中運用圓形、半圓與直線，象徵精萃技術的精準與有機植物的純粹。<br>這種不依賴複雜具象圖案的設計，呼應了有機精神 「不添加化學雜質」、「保留植物靈魂」的簡約哲學。<br>色調亦以柔和色系為主，整體能引發消費者對於「身心靈平衡」的期待。
+      </div>
+      <div class="vis-gallery">
+        <img src="visual/B-1.jpg" alt="B-1 版面">
+        <img src="visual/B-2.jpg" alt="B-2 版面">
+        <img src="visual/B-3.jpg" alt="B-3 版面">
+      </div>
+      <div class="vis-style-desc" style="margin-top:20px;">
+        <span class="vis-style-sub">人物（B-4）</span><br>
+        人物肢體由簡化的圓形和直線構成，此高飽和度色塊的設計語彙，使其能與<br>上述幾何抽象的版面產生完美的視覺連續性與風格統一性，<br>營造出活潑且具有設計感的整體氛圍，進而更能吸引消費者目光。
+      </div>
+      <div class="vis-gallery">
+        <img src="visual/B-4.jpg" alt="B-4 人物" class="tall">
+      </div>
+    </div>
+
+    <!-- ★ C風格 -->
+    <div class="vis-style-block fade-in d4">
+      <span class="vis-style-badge">★ C 風格</span>
+      <div class="vis-style-title">雅緻童趣風</div>
+      <div class="vis-style-desc">
+        <span class="vis-style-sub">版面（C-1~C-2）</span><br>
+        因ＴＡ有大部分為媽媽身份<br>對於童趣風格應該會較有感<br>建議可以類似的雅緻手繪風格<br>繪製品牌代表動物"驢子"(C-3-peb吉祥物)<br>以溫和的小動物<br>代替大部分人物出現的狀態<br>線條必須優雅簡約<br>以利營造品牌高質感的形象
+      </div>
+      <div class="vis-gallery">
+        <img src="visual/C-1.jpg" alt="C-1 版面">
+        <img src="visual/C-2.jpg" alt="C-2 版面">
+        <img src="visual/C-3-peb吉祥物.jpg" alt="C-3 peb吉祥物" class="tall">
+      </div>
+    </div>
+
+    <!-- 版面設計規範 -->
+    <div class="vis-note-block fade-in d5">
+      <div class="vis-note-title">peb 版面設計規範</div>
+      <div class="vis-note-text">
+        因品牌有許多與醫院端的講座合作<br>也會在雙方的社群平台露出<br>建議務必要跟對方拿到原始檔<br>由品牌端進行適合的元素重新截取＆設計後<br>在放置到官網上<br><br>如實在無法取得原始檔<br>建議針對該活動的重點內容<br>以peb的品牌風格<br>重新設計一張 以供各平台露出<br><br>最終目標 塑造品牌視覺語言的一致性
+      </div>
+    </div>
+
   </div>
 </section>
 

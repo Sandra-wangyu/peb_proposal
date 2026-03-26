@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>peb from nursing - 你的隨身護理師</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy-dark: #1f2e28;
+            --sage-green: #7a8c72;
+            --warm-amber: #c4956a;
+            --cream: #f5f0e8;
+            --text-dark: #3a3835;
+            --light-gray: #e8e4dc;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(31, 46, 40, 0.1);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--light-gray);
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sage-green), var(--warm-amber));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 36px 30px 30px;
+        }
+
+        /* Welcome Screen */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sage-green);
+            font-family: 'Noto Serif TC', serif;
+            letter-spacing: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: var(--warm-amber);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: 15px;
+            font-family: 'Noto Serif TC', serif;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            line-height: 1.6;
+            opacity: 0.7;
+        }
+
+        .description {
+            font-size: 13.5px;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 28px;
+            opacity: 0.65;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans TC', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--sage-green), var(--warm-amber));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(122, 140, 114, 0.3);
+        }
+
+        .btn-primary:hover, .btn-primary:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(122, 140, 114, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover, .btn-secondary:active {
+            background: #ddd9d0;
+        }
+
+        .btn-link {
+            background: transparent;
+            color: var(--sage-green);
+            border: 2px solid var(--sage-green);
+            margin-top: 12px;
+        }
+
+        .btn-link:hover, .btn-link:active {
+            background: rgba(122, 140, 114, 0.05);
+        }
+
+        /* Questions */
+        .question-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: 22px;
+            font-family: 'Noto Serif TC', serif;
+            letter-spacing: 0.5px;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-card {
+            padding: 16px 20px;
+            border: 1.5px solid var(--light-gray);
+            border-radius: 10px;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14.5px;
+            color: var(--text-dark);
+            letter-spacing: 0.3px;
+        }
+
+        .option-card:hover {
+            border-color: var(--sage-green);
+            background: rgba(122, 140, 114, 0.04);
+        }
+
+        .option-card.selected {
+            border-color: var(--sage-green);
+            background: rgba(122, 140, 114, 0.08);
+            font-weight: 600;
+        }
+
+        .option-icon {
+            display: none;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-checkmark {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--sage-green);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-card.selected .option-checkmark {
+            opacity: 1;
+        }
+
+        /* Results Screen */
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: 15px;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .result-direction {
+            background: linear-gradient(135deg, rgba(122, 140, 114, 0.1), rgba(196, 149, 106, 0.1));
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .result-direction strong {
+            color: var(--sage-green);
+        }
+
+        .products-section {
+            margin: 30px 0;
+        }
+
+        .products-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--warm-amber);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .product-card {
+            background: var(--cream);
+            border-left: 4px solid var(--sage-green);
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            animation: slideUp 0.5s ease both;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: 6px;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            color: var(--text-dark);
+            opacity: 0.8;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--warm-amber);
+        }
+
+        .product-tag {
+            font-size: 11px;
+            background: rgba(122, 140, 114, 0.15);
+            color: var(--sage-green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .tip-section {
+            background: rgba(196, 149, 106, 0.1);
+            border-left: 4px solid var(--warm-amber);
+            padding: 18px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .tip-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--warm-amber);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-dark);
+            opacity: 0.6;
+            padding: 20px 30px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 20px;
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .nav-buttons .btn {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 14px;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--sage-green), var(--warm-amber));
+            color: var(--white);
+        }
+
+        .btn-back {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        /* Utility */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="content">
+            <!-- Welcome Screen -->
+            <div class="screen active" data-screen="welcome">
+                <div class="logo">
+                    <div class="logo-text">peb from nursing</div>
+                    <div class="logo-subtitle">Organic Nursing Essentials</div>
+                </div>
+                <h1>你的隨身護理師</h1>
+                <p class="subtitle">回答幾個簡單問題，找到最適合你的產品</p>
+                <p class="description">
+                    無論是肌膚護理、呼吸道保養或舒壓放鬆，我們用天然有機精油和護膚品，幫助你找到最適合的護理方案。
+                </p>
+                <button class="btn btn-primary" onclick="startQuiz()">開始諮詢</button>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="screen" data-screen="question1">
+                <div class="question-title">你最想改善什麼？</div>
+                <div class="options-grid" id="question1-options">
+                    <div class="option-card" data-value="skincare" onclick="selectOption('q1', 'skincare', this)">
+                        <span class="option-icon">🌿</span>
+                        <span class="option-text">皮膚乾燥/敏感</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="respiratory" onclick="selectOption('q1', 'respiratory', this)">
+                        <span class="option-icon">😮‍💨</span>
+                        <span class="option-text">呼吸道不適</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="stress" onclick="selectOption('q1', 'stress', this)">
+                        <span class="option-icon">😰</span>
+                        <span class="option-text">壓力大/睡不好</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="pregnancy" onclick="selectOption('q1', 'pregnancy', this)">
+                        <span class="option-icon">🤰</span>
+                        <span class="option-text">孕期/產後護理</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="kids" onclick="selectOption('q1', 'kids', this)">
+                        <span class="option-icon">👶</span>
+                        <span class="option-text">兒童日常護理</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="muscle" onclick="selectOption('q1', 'muscle', this)">
+                        <span class="option-icon">💆</span>
+                        <span class="option-text">肌肉痠痛/循環</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-back" onclick="prevQuestion()">返回</button>
+                    <button class="btn btn-next" id="q1-next-btn" onclick="nextQuestion()" disabled style="opacity: 0.5; cursor: not-allowed;">下一步</button>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="screen" data-screen="question2">
+                <div class="question-title">你的膚質狀況？</div>
+                <div class="options-grid" id="question2-options">
+                    <div class="option-card" data-value="dry" onclick="selectOption('q2', 'dry', this)">
+                        <span class="option-icon">🌵</span>
+                        <span class="option-text">乾性肌膚</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="combination" onclick="selectOption('q2', 'combination', this)">
+                        <span class="option-icon">⚖️</span>
+                        <span class="option-text">混合/油性肌膚</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="sensitive" onclick="selectOption('q2', 'sensitive', this)">
+                        <span class="option-icon">💗</span>
+                        <span class="option-text">敏感肌膚</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="mature" onclick="selectOption('q2', 'mature', this)">
+                        <span class="option-icon">✨</span>
+                        <span class="option-text">老化/薄肌</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-back" onclick="prevQuestion()">返回</button>
+                    <button class="btn btn-next" id="q2-next-btn" onclick="nextQuestion()" disabled style="opacity: 0.5; cursor: not-allowed;">下一步</button>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="screen" data-screen="question3">
+                <div class="question-title">你偏好的護理方式？</div>
+                <div class="options-grid" id="question3-options">
+                    <div class="option-card" data-value="bath" onclick="selectOption('q3', 'bath', this)">
+                        <span class="option-icon">🫧</span>
+                        <span class="option-text">沐浴清潔時順便護理</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="oil" onclick="selectOption('q3', 'oil', this)">
+                        <span class="option-icon">💧</span>
+                        <span class="option-text">塗抹精油/植物油</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="portable" onclick="selectOption('q3', 'portable', this)">
+                        <span class="option-icon">🧴</span>
+                        <span class="option-text">護手霜/護唇膏隨身攜帶</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                    <div class="option-card" data-value="aroma" onclick="selectOption('q3', 'aroma', this)">
+                        <span class="option-icon">🌸</span>
+                        <span class="option-text">擴香/聞香放鬆</span>
+                        <div class="option-checkmark">✓</div>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-back" onclick="prevQuestion()">返回</button>
+                    <button class="btn btn-next" id="q3-next-btn" onclick="nextQuestion()" disabled style="opacity: 0.5; cursor: not-allowed;">完成</button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="screen" data-screen="results">
+                <div class="result-header">
+                    <div class="result-title">你的護理方案</div>
+                    <div class="result-direction" id="result-direction"></div>
+                </div>
+
+                <div class="products-section">
+                    <div class="products-label">推薦產品</div>
+                    <div id="products-container"></div>
+                </div>
+
+                <div class="tip-section">
+                    <div class="tip-label">🌿 護理師小叮嚀</div>
+                    <div class="tip-text" id="tip-text"></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="window.open('#', '_blank')">查看完整產品</button>
+                    <button class="btn btn-secondary" onclick="restartQuiz()">重新測驗</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            此為 peb 護理諮詢互動問卷 · Demo 版本
+        </div>
+    </div>
+
+    <script>
+        // State management
+        const state = {
+            currentScreen: 'welcome',
+            q1: null,
+            q2: null,
+            q3: null
+        };
+
+        const screenOrder = ['welcome', 'question1', 'question2', 'question3', 'results'];
+
+        // Product database
+        const products = {
+            skincare: {
+                dry: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '深層保濕' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '修護滋養' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '唇部護理' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '深層保濕' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '修護滋養' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和保濕，乾肌聖品', price: 'NT$2,780', tag: '精油保濕' }
+                    ],
+                    portable: [
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '隨身護理' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '唇部護理' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '深層保濕' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和保濕，乾肌聖品', price: 'NT$2,780', tag: '精油保濕' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '深層保濕' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '修護滋養' }
+                    ]
+                },
+                sensitive: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感肌首選' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '溫和護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感肌首選' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，敏感肌適用', price: 'NT$2,780', tag: '舒敏精油' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' }
+                    ],
+                    portable: [
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '溫和護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感肌首選' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，敏感肌適用', price: 'NT$2,780', tag: '舒敏精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感肌首選' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '溫和護唇' }
+                    ]
+                },
+                combination: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '平衡修護' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇' }
+                    ],
+                    oil: [
+                        { name: '永久花精油 5ml', desc: '平衡肌膚狀態', price: 'NT$1,680', tag: '平衡精油' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '平衡修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '溫和潔淨' }
+                    ],
+                    portable: [
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '隨身修護' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '溫和潔淨' }
+                    ],
+                    aroma: [
+                        { name: '永久花精油 5ml', desc: '平衡肌膚狀態', price: 'NT$1,680', tag: '平衡精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '平衡修護' }
+                    ]
+                },
+                mature: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '抗老護理' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '唇部護理' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '抗老修護' }
+                    ],
+                    oil: [
+                        { name: '永久花精油 5ml', desc: '撫紋修護，抗老精品', price: 'NT$1,680', tag: '抗老精油' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '抗老修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '抗老護理' }
+                    ],
+                    portable: [
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '隨身抗老' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '唇部護理' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '抗老護理' }
+                    ],
+                    aroma: [
+                        { name: '永久花精油 5ml', desc: '撫紋修護，抗老精品', price: 'NT$1,680', tag: '抗老精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '抗老護理' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '抗老修護' }
+                    ]
+                }
+            },
+            respiratory: {
+                dry: {
+                    bath: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' },
+                        { name: '成人呼吸道保養組', desc: '完整護理組合', price: 'NT$2,040', tag: '保養組合' }
+                    ],
+                    oil: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ],
+                    portable: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '隨身護理' },
+                        { name: '成人呼吸道保養組', desc: '完整護理組合', price: 'NT$2,040', tag: '保養組合' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '擴香保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ]
+                },
+                sensitive: {
+                    bath: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜', price: 'NT$2,780', tag: '舒敏保養' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感護理' }
+                    ],
+                    oil: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜', price: 'NT$2,780', tag: '舒敏保養' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' }
+                    ],
+                    portable: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '隨身護理' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感護理' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '溫和護唇' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '擴香保養' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜', price: 'NT$2,780', tag: '舒敏保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' }
+                    ]
+                },
+                combination: {
+                    bath: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '成人呼吸道保養組', desc: '完整護理組合', price: 'NT$2,040', tag: '保養組合' }
+                    ],
+                    oil: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ],
+                    portable: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '隨身護理' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '成人呼吸道保養組', desc: '完整護理組合', price: 'NT$2,040', tag: '保養組合' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '擴香保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ]
+                },
+                mature: {
+                    bath: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ],
+                    oil: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '呼吸保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '永久花精油 5ml', desc: '抗老呼吸護理', price: 'NT$1,680', tag: '抗老保養' }
+                    ],
+                    portable: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '隨身護理' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '成人呼吸道保養組', desc: '完整護理組合', price: 'NT$2,040', tag: '保養組合' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '呼吸道基本款', price: 'NT$880', tag: '擴香保養' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神、呼吸通暢', price: 'NT$1,080', tag: '呼吸暢通' },
+                        { name: '芳香羅文莎葉精油 10ml', desc: '抗病毒、免疫提升', price: 'NT$1,380', tag: '免疫守護' }
+                    ]
+                }
+            },
+            stress: {
+                dry: {
+                    bath: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '舒壓護理' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' }
+                    ],
+                    oil: [
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和保濕，放鬆首選', price: 'NT$2,780', tag: '舒敏放鬆' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '隨身舒壓' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒壓修護' }
+                    ],
+                    aroma: [
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' }
+                    ]
+                },
+                sensitive: {
+                    bath: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '舒壓護理' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，敏感肌適用', price: 'NT$2,780', tag: '舒敏放鬆' }
+                    ],
+                    oil: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，敏感肌適用', price: 'NT$2,780', tag: '舒敏放鬆' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '隨身舒壓' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，敏感肌適用', price: 'NT$2,780', tag: '舒敏放鬆' },
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' }
+                    ]
+                },
+                combination: {
+                    bath: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '舒壓護理' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' }
+                    ],
+                    oil: [
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '永久花精油 5ml', desc: '平衡放鬆', price: 'NT$1,680', tag: '平衡舒壓' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '隨身舒壓' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒壓修護' }
+                    ],
+                    aroma: [
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' }
+                    ]
+                },
+                mature: {
+                    bath: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '舒壓護理' },
+                        { name: '有機驢奶冷皂（平靜岩蘭草）', desc: '深層舒壓', price: 'NT$800', tag: '深層放鬆' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' }
+                    ],
+                    oil: [
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '永久花精油 5ml', desc: '抗老放鬆', price: 'NT$1,680', tag: '抗老舒壓' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（紓壓薰衣草）', desc: '沐浴時放鬆身心', price: 'NT$800', tag: '隨身舒壓' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒壓修護' }
+                    ],
+                    aroma: [
+                        { name: '薰衣草精油 10ml', desc: '經典放鬆', price: 'NT$780', tag: '舒眠安撫' },
+                        { name: '沉香醇百里香精油 5ml', desc: '溫和安撫', price: 'NT$1,580', tag: '舒壓精油' },
+                        { name: '永久花精油 5ml', desc: '抗老放鬆', price: 'NT$1,680', tag: '抗老舒壓' }
+                    ]
+                }
+            },
+            pregnancy: {
+                dry: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' }
+                    ],
+                    portable: [
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' }
+                    ]
+                },
+                sensitive: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' }
+                    ],
+                    portable: [
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' }
+                    ]
+                },
+                combination: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' }
+                    ],
+                    portable: [
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' }
+                    ]
+                },
+                mature: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' }
+                    ],
+                    portable: [
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '孕期修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '安全精油' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油，孕婦首選', price: 'NT$800', tag: '孕期安心' },
+                        { name: '永久花護唇膏', desc: '天然成分，安心使用', price: 'NT$620', tag: '天然護唇' }
+                    ]
+                }
+            },
+            kids: {
+                dry: {
+                    bath: [
+                        { name: '兒童呼吸道保養組', desc: '兒童專用配方', price: 'NT$2,740', tag: '兒童安心' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '兒童適用' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '兒童適用' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' }
+                    ]
+                },
+                sensitive: {
+                    bath: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '兒童呼吸道保養組', desc: '兒童專用配方', price: 'NT$2,740', tag: '兒童安心' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '兒童適用' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' }
+                    ],
+                    aroma: [
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '兒童適用' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' }
+                    ]
+                },
+                combination: {
+                    bath: [
+                        { name: '兒童呼吸道保養組', desc: '兒童專用配方', price: 'NT$2,740', tag: '兒童安心' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '永久花精油 5ml', desc: '平衡保護', price: 'NT$1,680', tag: '平衡護理' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '永久花精油 5ml', desc: '平衡保護', price: 'NT$1,680', tag: '平衡護理' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' }
+                    ]
+                },
+                mature: {
+                    bath: [
+                        { name: '兒童呼吸道保養組', desc: '兒童專用配方', price: 'NT$2,740', tag: '兒童安心' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' }
+                    ],
+                    oil: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '兒童適用' }
+                    ],
+                    portable: [
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' },
+                        { name: '永久花護唇膏', desc: '修復乾裂，天然成分', price: 'NT$620', tag: '護唇護理' },
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' }
+                    ],
+                    aroma: [
+                        { name: '澳洲尤加利精油 10ml', desc: '溫和守護', price: 'NT$880', tag: '兒童守護' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜，嬰幼兒適用', price: 'NT$2,780', tag: '兒童適用' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '無精油最安心', price: 'NT$800', tag: '溫和潔淨' }
+                    ]
+                }
+            },
+            muscle: {
+                dry: {
+                    bath: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '辣薄荷精油 10ml', desc: '清涼舒緩', price: 'NT$980', tag: '清涼舒適' }
+                    ],
+                    oil: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '辣薄荷精油 10ml', desc: '清涼舒緩', price: 'NT$980', tag: '清涼舒適' }
+                    ],
+                    portable: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '隨身舒緩' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '護手修護' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' }
+                    ],
+                    aroma: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '擴香舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '辣薄荷精油 10ml', desc: '清涼舒緩', price: 'NT$980', tag: '清涼舒適' }
+                    ]
+                },
+                sensitive: {
+                    bath: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感護理' }
+                    ],
+                    oil: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜', price: 'NT$2,780', tag: '舒敏護理' }
+                    ],
+                    portable: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '隨身舒緩' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '舒敏修護' },
+                        { name: '有機驢奶冷皂（舒敏金盞花）', desc: '30%有機驢奶，無精油配方', price: 'NT$800', tag: '敏感護理' }
+                    ],
+                    aroma: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '擴香舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '羅馬洋甘菊精油 5ml', desc: '溫和鎮靜', price: 'NT$2,780', tag: '舒敏護理' }
+                    ]
+                },
+                combination: {
+                    bath: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '辣薄荷精油 10ml', desc: '清涼舒緩', price: 'NT$980', tag: '清涼舒適' }
+                    ],
+                    oil: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '辣薄荷精油 10ml', desc: '清涼舒緩', price: 'NT$980', tag: '清涼舒適' }
+                    ],
+                    portable: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '隨身舒緩' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '護手修護' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' }
+                    ],
+                    aroma: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '擴香舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '辣薄荷精油 10ml', desc: '清涼舒緩', price: 'NT$980', tag: '清涼舒適' }
+                    ]
+                },
+                mature: {
+                    bath: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '永久花精油 5ml', desc: '抗老舒緩', price: 'NT$1,680', tag: '抗老護理' }
+                    ],
+                    oil: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '肌肉舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '永久花精油 5ml', desc: '抗老舒緩', price: 'NT$1,680', tag: '抗老護理' }
+                    ],
+                    portable: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '隨身舒緩' },
+                        { name: '天藍烴護手霜', desc: '德國洋甘菊深層修護', price: 'NT$880', tag: '抗老修護' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' }
+                    ],
+                    aroma: [
+                        { name: '樟腦迷迭香精油 10ml', desc: '醒腦專注、肌肉舒緩', price: 'NT$980', tag: '擴香舒緩' },
+                        { name: '黑雲杉精油 10ml', desc: '提振精神', price: 'NT$1,080', tag: '提振活力' },
+                        { name: '永久花精油 5ml', desc: '抗老舒緩', price: 'NT$1,680', tag: '抗老護理' }
+                    ]
+                }
+            }
+        };
+
+        const tips = {
+            skincare: '敏感肌膚需要溫和呵護，建議先在手臂內側測試，確保無不適再大面積使用。',
+            respiratory: '呼吸道保養要持續，搭配擴香或沐浴，效果更佳。建議每天使用。',
+            stress: '壓力舒緩需要時間，建議建立日常護理習慣，晚上使用效果更好。',
+            pregnancy: '孕期護理以安全天然為首選，所有產品均無精油配方，媽媽和寶寶都安心。',
+            kids: '兒童護理從小開始，溫和配方適合全家使用，讓孩子從小享受天然護理。',
+            muscle: '肌肉痠痛可搭配按摩使用，在洗澡後使用效果最佳，堅持使用改善更明顯。'
+        };
+
+        const directionLabels = {
+            skincare: '皮膚乾燥/敏感護理',
+            respiratory: '呼吸道保養',
+            stress: '壓力舒緩/睡眠護理',
+            pregnancy: '孕期/產後護理',
+            kids: '兒童日常護理',
+            muscle: '肌肉痠痛/循環'
+        };
+
+        // Functions
+        function startQuiz() {
+            goToScreen('question1');
+        }
+
+        function selectOption(questionId, value, element) {
+            const question = questionId === 'q1' ? 'q1' : questionId === 'q2' ? 'q2' : 'q3';
+            state[question] = value;
+
+            const cards = element.parentElement.querySelectorAll('.option-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const nextBtn = document.getElementById(questionId + '-next-btn');
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = '1';
+                nextBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function nextQuestion() {
+            const currentIdx = screenOrder.indexOf(state.currentScreen);
+            if (currentIdx < screenOrder.length - 1) {
+                const nextScreen = screenOrder[currentIdx + 1];
+                if (nextScreen === 'results') {
+                    generateResults();
+                }
+                goToScreen(nextScreen);
+            }
+        }
+
+        function prevQuestion() {
+            const currentIdx = screenOrder.indexOf(state.currentScreen);
+            if (currentIdx > 0) {
+                goToScreen(screenOrder[currentIdx - 1]);
+            }
+        }
+
+        function goToScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-screen="${screenName}"]`).classList.add('active');
+            state.currentScreen = screenName;
+            updateProgressBar();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgressBar() {
+            const idx = screenOrder.indexOf(state.currentScreen);
+            const progress = (idx / (screenOrder.length - 1)) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        }
+
+        function generateResults() {
+            const q1 = state.q1;
+            const q2 = state.q2;
+            const q3 = state.q3;
+
+            const productList = products[q1][q2][q3];
+            const direction = directionLabels[q1];
+            const tip = tips[q1];
+
+            document.getElementById('result-direction').innerHTML = `<strong>${direction}</strong> × ${getQ2Label(q2)}`;
+            document.getElementById('tip-text').textContent = tip;
+
+            const productsHtml = productList.map(p => `
+                <div class="product-card">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-desc">${p.desc}</div>
+                    <div class="product-info">
+                        <span class="product-price">${p.price}</span>
+                        <span class="product-tag">${p.tag}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('products-container').innerHTML = productsHtml;
+        }
+
+        function getQ2Label(q2) {
+            const labels = {
+                dry: '乾性肌膚',
+                combination: '混合/油性肌膚',
+                sensitive: '敏感肌膚',
+                mature: '老化/薄肌'
+            };
+            return labels[q2];
+        }
+
+        function restartQuiz() {
+            state.q1 = null;
+            state.q2 = null;
+            state.q3 = null;
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.btn-next').forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+            });
+            goToScreen('welcome');
+        }
+
+        // Initialize
+        updateProgressBar();
+    </script>
+</body>
+</html>
